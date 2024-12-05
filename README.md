@@ -4,7 +4,7 @@
 
 In this AKS-focused workshop, you will work with Azure and Calico Cloud to learn about Calico's ebpf dataplane and how to examine and debug Calico Network Policies to secure workloads in Calico Cloud.
 
-AKS provides a [Bring your own CNI plugin option](https://learn.microsoft.com/en-us/azure/aks/use-byo-cni?tabs=azure-cli) option where each pod gets networked by a third-party CNI getting a private IP from configured POD CIDR. This mode can be leveraged to take full advantage of Calico's eBPF dataplane for networking.
+AKS provides a [Bring your own CNI plugin option](https://learn.microsoft.com/en-us/azure/aks/use-byo-cni?tabs=azure-cli) where each pod gets networked by a third-party CNI getting a private IP from configured POD CIDR. This mode can be leveraged to take full advantage of Calico's eBPF dataplane for networking.
 
 ## What is eBPF?
 
