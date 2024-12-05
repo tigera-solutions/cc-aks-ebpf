@@ -19,7 +19,7 @@ During this workshop, we will use the `Stars` application as an example to work 
 
    Included in the `pre` folder, there is the application that will be used in the exercises during the workshop. The diagram below shows how the applications' microservices communicate between themselves.
 
-   *SSHOT-GOES-HERE*
+   ![stars](https://github.com/user-attachments/assets/5449ad0a-b7d3-45ac-bf86-fc629e3ff174)
 
    The necessary policies and tiers will also be created.
 
