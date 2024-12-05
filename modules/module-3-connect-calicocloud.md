@@ -21,7 +21,7 @@ Issues with being unable to navigate menus in the UI are often due to browsers b
 
    > **Warning**
    > Please choose a unique name with your alias or username for the cluster name as the workshop uses a shared Calico Cloud instance.
-   > A good example: "cc-aks-myname-workshop"
+   > A good example: "cc-aks-myname-workshop"  
    > Also, check the `Advanced` checkbox to use `Helm` option to generate the command via `Helm` to stay consistent with our installation method!
 
 2. Run the installation script in your cluster. Script should look similar to this:
