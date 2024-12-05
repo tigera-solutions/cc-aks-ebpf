@@ -24,6 +24,8 @@ Issues with being unable to navigate menus in the UI are often due to browsers b
    > A good example: "cc-aks-myname-workshop"  
    > Also, check the `Advanced` checkbox to use `Helm` option to generate the command via `Helm` to stay consistent with our installation method!
 
+   ![connect-cluster-helm](https://github.com/user-attachments/assets/e90a18c5-e25d-4bf8-bc61-97ad3a3d396c)
+
 2. Run the installation script in your cluster. Script should look similar to this:
 
     ```bash
