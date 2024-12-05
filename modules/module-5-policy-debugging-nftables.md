@@ -4,7 +4,7 @@
 
 1. First review the policy for the `client` namespace (and associated pod) in the `Policy Board` on Calico Cloud:
 
-   *SSHOT-GOES-HERE*
+   ![client-policy](https://github.com/user-attachments/assets/8c2c02da-3c27-493d-b27f-27892b1bc8a8)
 
    We see that `TCP` egress traffic from the `client` namespace is allowed to the pods in the `stars` namespace on destination ports `6379` and `80`
 
