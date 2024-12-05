@@ -43,7 +43,7 @@
      --resource-group $RESOURCE_GROUP \
      --name $CLUSTERNAME \
      --kubernetes-version $K8S_VERSION \
-     --nodepool-name 'aks-ebpf-ng' \
+     --nodepool-name 'nodepool1' \
      --location $LOCATION \
      --node-count 3 \
      --network-plugin none \
