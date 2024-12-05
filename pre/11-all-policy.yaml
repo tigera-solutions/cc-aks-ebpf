@@ -1,0 +1,330 @@
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: security.block-alienvault-ipthreatfeed
+spec:
+  tier: security
+  order: -90
+  selector: all()
+  namespaceSelector: ''
+  serviceAccountSelector: ''
+  ingress:
+    - action: Deny
+      source:
+        selector: feed == "otx-ipthreatfeed"
+      destination: {}
+  egress:
+    - action: Deny
+      source: {}
+      destination:
+        selector: feed == "otx-ipthreatfeed"
+  doNotTrack: false
+  applyOnForward: false
+  preDNAT: false
+  types:
+    - Ingress
+    - Egress
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: security.cluster-dns-allow-all
+spec:
+  tier: security
+  order: 10
+  selector: ''
+  namespaceSelector: ''
+  serviceAccountSelector: ''
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: all()
+      destination:
+        selector: k8s-app == "kube-dns"
+        ports:
+          - '53'
+    - action: Allow
+      protocol: UDP
+      source:
+        namespaceSelector: all()
+      destination:
+        selector: k8s-app == "kube-dns"
+        ports:
+          - '53'
+  egress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: all()
+      destination:
+        selector: k8s-app == "kube-dns"
+        ports:
+          - '53'
+    - action: Allow
+      protocol: UDP
+      source:
+        namespaceSelector: all()
+      destination:
+        selector: k8s-app == "kube-dns"
+        ports:
+          - '53'
+  doNotTrack: false
+  applyOnForward: false
+  preDNAT: false
+  types:
+    - Ingress
+    - Egress
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: security.security-default-pass
+spec:
+  tier: security
+  order: 10000
+  selector: ''
+  namespaceSelector: ''
+  serviceAccountSelector: ''
+  ingress:
+    - action: Pass
+      source: {}
+      destination: {}
+  egress:
+    - action: Pass
+      source: {}
+      destination: {}
+  doNotTrack: false
+  applyOnForward: false
+  preDNAT: false
+  types:
+    - Ingress
+    - Egress
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: platform.management-ui
+spec:
+  tier: platform
+  order: 0
+  selector: projectcalico.org/namespace == "management-ui"
+  namespaceSelector: ''
+  serviceAccountSelector: ''
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: >-
+          projectcalico.org/name == "stars" || projectcalico.org/name ==
+          "client" || projectcalico.org/name == "management-ui"
+      destination:
+        ports:
+          - '9001'
+    - action: Allow
+      protocol: TCP
+      source:
+        nets:
+          - 10.224.0.0/16
+      destination:
+        ports:
+          - '9001'
+  egress:
+    - action: Allow
+      protocol: TCP
+      source: {}
+      destination:
+        namespaceSelector: projectcalico.org/name == "client"
+        ports:
+          - '9000'
+    - action: Allow
+      protocol: TCP
+      source: {}
+      destination:
+        namespaceSelector: projectcalico.org/name == "stars"
+        ports:
+          - '80'
+          - '6379'
+  doNotTrack: false
+  applyOnForward: false
+  preDNAT: false
+  types:
+    - Ingress
+    - Egress
+---
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: platform.backend
+  namespace: stars
+spec:
+  tier: platform
+  order: 20
+  selector: role == "backend"
+  serviceAccountSelector: ''
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        selector: role == "frontend"
+      destination:
+        ports:
+          - '6379'
+    - action: Allow
+      protocol: TCP
+      source:
+        selector: role == "backend"
+      destination:
+        ports:
+          - '6379'
+    - action: Allow
+      protocol: TCP
+      source:
+        selector: role == "client"
+        namespaceSelector: projectcalico.org/name == "client"
+      destination:
+        ports:
+          - '6379'
+    - action: Allow
+      protocol: TCP
+      source:
+        selector: role == "management-ui"
+        namespaceSelector: projectcalico.org/name == "management-ui"
+      destination:
+        ports:
+          - '6379'
+  egress:
+    - action: Allow
+      protocol: TCP
+      source: {}
+      destination:
+        selector: role == "backend"
+        ports:
+          - '6379'
+    - action: Allow
+      protocol: TCP
+      source: {}
+      destination:
+        selector: role == "frontend"
+        ports:
+          - '80'
+    - action: Allow
+      protocol: TCP
+      source: {}
+      destination:
+        selector: role == "client"
+        namespaceSelector: projectcalico.org/name == "client"
+        ports:
+          - '9000'
+  types:
+    - Ingress
+    - Egress
+---
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: platform.frontend
+  namespace: stars
+spec:
+  tier: platform
+  order: 20
+  selector: role == "frontend"
+  serviceAccountSelector: ''
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        selector: role == "backend"
+      destination:
+        ports:
+          - '80'
+    - action: Allow
+      protocol: TCP
+      source:
+        selector: role == "frontend"
+      destination:
+        ports:
+          - '80'
+    - action: Allow
+      protocol: TCP
+      source:
+        selector: role == "client"
+        namespaceSelector: projectcalico.org/name == "client"
+      destination:
+        ports:
+          - '80'
+    - action: Allow
+      protocol: TCP
+      source:
+        selector: role == "management-ui"
+        namespaceSelector: projectcalico.org/name == "management-ui"
+      destination:
+        ports:
+          - '80'
+  egress:
+    - action: Allow
+      protocol: TCP
+      source: {}
+      destination:
+        selector: role == "backend"
+        ports:
+          - '6379'
+    - action: Allow
+      protocol: TCP
+      source: {}
+      destination:
+        selector: role == "frontend"
+        ports:
+          - '80'
+    - action: Allow
+      protocol: TCP
+      source: {}
+      destination:
+        selector: role == "client"
+        namespaceSelector: projectcalico.org/name == "client"
+        ports:
+          - '9000'
+  types:
+    - Ingress
+    - Egress
+---
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: platform.client-policy
+  namespace: client
+  labels:
+    projectcalico.org/tier: platform
+spec:
+  tier: platform
+  order: 100
+  selector: projectcalico.org/namespace == 'client'
+  serviceAccountSelector: ''
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: projectcalico.org/name == 'management-ui'
+      destination:
+        ports:
+          - '9000'
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: projectcalico.org/name == 'stars'
+      destination:
+        ports:
+          - '9000'
+  egress:
+    - action: Allow
+      protocol: TCP
+      source: {}
+      destination:
+        namespaceSelector: projectcalico.org/name == 'stars'
+        ports:
+          - '6379'
+          - '80'
+  types:
+    - Ingress
+    - Egress
